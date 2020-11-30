@@ -5,6 +5,7 @@ import java.util.HashMap;
 public class Result {
     private HashMap<Integer, Integer> coreMap;
     private Double takenTime;
+    private int totalRound;
     private String algorithmName;
     private String datasetName;
     private String type;
@@ -19,21 +20,13 @@ public class Result {
         this.algorithmName = algorithmName;
     }
 
-
-    public Result(HashMap<Integer, Integer> coreMap, Double takenTime, String algorithmName, String type) {
+    public Result(HashMap<Integer, Integer> coreMap, Double takenTime, int totalRound, String algorithmName) {
         this.coreMap = coreMap;
         this.takenTime = takenTime;
+        this.totalRound = totalRound;
         this.algorithmName = algorithmName;
-        this.type = type;
     }
 
-    public Result(HashMap<Integer, Integer> coreMap, Double takenTime, String algorithmName, String datasetName, String type) {
-        this.coreMap = coreMap;
-        this.takenTime = takenTime;
-        this.algorithmName = algorithmName;
-        this.datasetName = datasetName;
-        this.type = type;
-    }
 
     /**
      * Getter() and Setter()
@@ -76,5 +69,13 @@ public class Result {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getTotalRound() {
+        return totalRound;
+    }
+
+    public void setTotalRound(int totalRound) {
+        this.totalRound = totalRound;
     }
 }

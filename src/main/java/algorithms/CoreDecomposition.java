@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Map;
 
 public class CoreDecomposition {
     private static Logger LOGGER = Logger.getLogger(CoreDecomposition.class);
@@ -28,41 +28,48 @@ public class CoreDecomposition {
         HashMap<Integer, Integer> coreMap = new HashMap<>();
 
         for (int k = 1; ; k++) {
-
             if (tempNodeList.isEmpty()) {
                 break;
             }
 
-            LinkedList<Integer> delQueue = new LinkedList<>();
-            for (Integer node : degMap.keySet()) {
-                if (degMap.get(node) <= k) {
-                    delQueue.offer(node);
+            ArrayList<Integer> delQueue = new ArrayList<>();
+            for (Map.Entry<Integer, Integer> degMapEntry : degMap.entrySet()) {
+                Integer u = degMapEntry.getKey();
+                int degreeU = degMapEntry.getValue();
+                if (degreeU <= k) {
+                    delQueue.add(u);
                 }
             }
 
             while (!delQueue.isEmpty()) {
-                LinkedList<Integer> newDelQueue = new LinkedList<>();
+                ArrayList<Integer> newDelQueue = new ArrayList<>();
 
-                Integer node = delQueue.poll();
+                for (Integer node : delQueue) {
+                    if (!tempNodeList.contains(node)) continue;
 
-                ArrayList<Integer> nodeNeigbors = adjMap.get(node);
-                for (Integer nodeNei : nodeNeigbors) {
-                    int degNodeNei = degMap.get(nodeNei) - 1;
-                    degMap.put(nodeNei, degNodeNei);
+                    ArrayList<Integer> nodeNeigbors = adjMap.get(node);
+                    for (Integer nodeNei : nodeNeigbors) {
+                        if (!tempNodeList.contains(nodeNei)) continue;
 
-                    if (degNodeNei == k) {
-                        newDelQueue.offer(nodeNei);
+                        int degNodeNei = degMap.get(nodeNei) - 1;
+                        degMap.put(nodeNei, degNodeNei);
+
+                        if (degNodeNei == k) {
+                            newDelQueue.add(nodeNei);
+                        }
                     }
+                    coreMap.put(node, k);
+                    tempNodeList.remove(node);
                 }
-                coreMap.put(node, k);
-
                 delQueue = newDelQueue;
             }
         }
 
         long endTime = System.nanoTime();
-        LOGGER.info("TakenTime:" + (double) (endTime - startTime) / 1.0E9D);
-        return new Result(coreMap, System.nanoTime() - startTime, "CoreDecomposition");
+        double takenTime = (endTime - startTime) / 1.0E9D;
+        LOGGER.info("TakenTime:" + takenTime);
+
+        return new Result(coreMap, takenTime, "CoreDecomposition");
     }
 
 }
